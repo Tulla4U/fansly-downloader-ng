@@ -6,7 +6,7 @@ import traceback
 from typing import Any
 
 from .downloadstate import DownloadState
-from .media import download_media
+from .media import download_media, download_media_infos
 from .types import DownloadType
 
 from config import FanslyConfig
@@ -16,7 +16,7 @@ from pathio import set_create_directory_for_download
 from textio import print_error, print_info, print_warning, input_enter_continue
 
 
-def get_unique_media_ids(info_object: dict[str, Any]) -> list[str]:
+def get_unique_media_ids(info_object: dict[str, Any], config: FanslyConfig) -> list[str]:
     """Extracts a unique list of media IDs from `accountMedia` and
     `accountMediaBundles` of prominent Fansly API objects.
 
@@ -49,11 +49,6 @@ def get_unique_media_ids(info_object: dict[str, Any]) -> list[str]:
             )
         return True
 
-    account_media_ids = [
-        media['id']
-        for media in account_media if check(media)
-    ]
-
     bundle_media_ids = []
 
     media_id_bundles = [
@@ -64,16 +59,19 @@ def get_unique_media_ids(info_object: dict[str, Any]) -> list[str]:
     # Flatten the ID lists
     for id_list in media_id_bundles:
         bundle_media_ids.extend(id_list)
+    
+    # Get media info for bundles
+    bundle_media = download_media_infos(config, bundle_media_ids)
+    all_media = account_media + bundle_media
 
-    all_media_ids = set()
+    # filter media by type
+    def check_type(media):
+        return media['media']['type'] == 2
 
-    for id in account_media_ids:
-        all_media_ids.add(id)
-
-    for id in bundle_media_ids:
-        all_media_ids.add(id)
-
-    return list(all_media_ids)
+    return [
+        media
+        for media in all_media if check_type(media)
+    ]
 
 
 def print_download_info(config: FanslyConfig) -> None:

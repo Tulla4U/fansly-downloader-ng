@@ -57,9 +57,9 @@ def download_timeline(config: FanslyConfig, state: DownloadState) -> None:
                 if config.debug:
                     print_debug(f'Timeline object: {timeline}')
 
-                all_media_ids = get_unique_media_ids(timeline)
+                media_infos = get_unique_media_ids(timeline, config)
 
-                if len(all_media_ids) == 0:
+                if len(media_infos) == 0:
                     # We might be a rate-limit victim, slow extremely down -
                     # but only if there are retries left
                     if attempts < config.timeline_retries:
@@ -73,7 +73,6 @@ def download_timeline(config: FanslyConfig, state: DownloadState) -> None:
                     # Reset attempts eg. new timeline
                     attempts = 0
 
-                media_infos = download_media_infos(config, all_media_ids)
 
                 if not process_download_accessible_media(config, state, media_infos):
                     # Break on deduplication error - already downloaded
