@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+from config.downloadmediatype import DownloadMediaType
 from config.modes import DownloadMode
 from config.metadatahandling import MetadataHandling
 
@@ -59,6 +60,7 @@ class FanslyConfig(object):
     # Options
     # "Normal" | "Timeline" | "Messages" | "Single" | "Collection"
     download_mode: DownloadMode = DownloadMode.NORMAL
+    download_media_type: DownloadMediaType = DownloadMediaType.ALL
     download_directory: (None | Path) = None
     download_media_previews: bool = True
     # "Advanced" | "Simple"
@@ -142,6 +144,10 @@ class FanslyConfig(object):
     def download_mode_str(self) -> str:
         """Gets the string representation of `download_mode`."""
         return str(self.download_mode).capitalize()
+    
+    def download_media_type_str(self) -> str:
+        """Gets the string representation of `download_media_type`."""
+        return str(self.download_media_type).capitalize()
 
 
     def metadata_handling_str(self) -> str:
@@ -168,6 +174,7 @@ class FanslyConfig(object):
             self._parser.set('Options', 'download_directory', str(self.download_directory))
 
         self._parser.set('Options', 'download_mode', self.download_mode_str())
+        self._parser.set('Options', 'download_media_type', self.download_media_type_str())
         self._parser.set('Options', 'metadata_handling', self.metadata_handling_str())
         
         # Booleans

@@ -9,6 +9,7 @@ from os import getcwd
 from os.path import join
 from pathlib import Path
 
+from config.downloadmediatype import DownloadMediaType
 from config.fanslyconfig import FanslyConfig
 from config.metadatahandling import MetadataHandling
 from config.modes import DownloadMode
@@ -218,6 +219,9 @@ def load_config(config: FanslyConfig) -> None:
         # Normal (Timeline & Messages), Timeline, Messages, Single (Single by post id) or Collections -> str
         download_mode = config._parser.get(options_section, 'download_mode', fallback='Normal')
         config.download_mode = DownloadMode(download_mode.upper())
+
+        download_media_type = config._parser.get(options_section, 'download_media_type', fallback='All')
+        config.download_media_type = DownloadMediaType(download_media_type.upper())
 
         # Advanced, Simple -> str
         metadata_handling = config._parser.get(options_section, 'metadata_handling', fallback='Advanced')
