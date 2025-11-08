@@ -241,6 +241,7 @@ def load_config(config: FanslyConfig) -> None:
         # Numbers
         config.timeline_retries = config._parser.getint(options_section, 'timeline_retries', fallback=1)
         config.timeline_delay_seconds = config._parser.getint(options_section, 'timeline_delay_seconds', fallback=60)
+        config.download_media_min_duration = config._parser.getint(options_section, 'download_media_min_duration', fallback=30)
 
         #region Renamed Options
 

@@ -63,6 +63,8 @@ class FanslyConfig(object):
     download_media_type: DownloadMediaType = DownloadMediaType.ALL
     download_directory: (None | Path) = None
     download_media_previews: bool = True
+    # only videos longer than 30s will be considered
+    download_media_min_duration: int = 30
     # "Advanced" | "Simple"
     metadata_handling: MetadataHandling = MetadataHandling.ADVANCED
     open_folder_when_finished: bool = True
@@ -193,6 +195,7 @@ class FanslyConfig(object):
         # Unsigned ints
         self._parser.set('Options', 'timeline_retries', str(self.timeline_retries))
         self._parser.set('Options', 'timeline_delay_seconds', str(self.timeline_delay_seconds))
+        self._parser.set('Options', 'download_media_min_duration', str(self.download_media_min_duration))
 
         # Cache
         if self._api is not None:

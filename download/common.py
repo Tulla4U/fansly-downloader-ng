@@ -2,6 +2,7 @@
 
 
 import traceback
+import json
 
 from typing import Any
 
@@ -66,7 +67,19 @@ def get_unique_media_ids(info_object: dict[str, Any], config: FanslyConfig) -> l
     bundle_media = download_media_infos(config, bundle_media_ids)
     all_media = account_media + bundle_media
 
-    return filter_media_by_type(config, all_media)
+    return filter_media_by_type(config, filter_media_by_length(config, all_media))
+
+def filter_media_by_length(config: FanslyConfig, all_media: list[dict]) -> list[dict]:
+    def check_length(media):
+        if media['media']['type'] == 1:
+            return True
+        duration = json.loads(media['media']['metadata'])['duration']
+        return duration >= config.download_media_min_duration
+    
+    return [
+        media
+        for media in all_media if check_length(media)
+    ]
 
 def filter_media_by_type(config: FanslyConfig, all_media: list[dict]) -> list[dict]:
     ## remove media info for undesired types
